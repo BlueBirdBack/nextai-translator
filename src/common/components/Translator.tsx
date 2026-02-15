@@ -1018,7 +1018,10 @@ function InnerTranslator(props: IInnerTranslatorProps) {
 
         const calculateTranslatedContentMaxHeight = (): number => {
             const { innerHeight } = window
-            const maxHeight = popupCardInnerContainer ? parseInt(popupCardInnerContainer.style.maxHeight) : innerHeight
+            const parsedMaxHeight = parseInt(popupCardInnerContainer.style.maxHeight, 10)
+            const maxHeight = Number.isFinite(parsedMaxHeight)
+                ? parsedMaxHeight
+                : popupCardInnerContainer.getBoundingClientRect().height || innerHeight
 
             const editorHeight = editorContainerRef.current?.offsetHeight || 0
             const actionButtonsHeight = actionButtonsRef.current?.offsetHeight || 0
@@ -1033,22 +1036,29 @@ function InnerTranslator(props: IInnerTranslatorProps) {
                 parseInt(containerPaddingTop) +
                 parseInt(containerPaddingBottom)
 
-            return maxHeight - headerHeight - editorHeight - actionButtonsHeight - paddingVertical
+            return Math.max(0, maxHeight - headerHeight - editorHeight - actionButtonsHeight - paddingVertical)
         }
 
-        const resizeHandle: ResizeObserverCallback = _.debounce(() => {
-            // Listen for element height changes
+        const applyTranslatedContentMaxHeight = () => {
             const $translatedContent = translatedContentRef.current
             if ($translatedContent) {
                 const translatedContentMaxHeight = calculateTranslatedContentMaxHeight()
                 $translatedContent.style.maxHeight = `${translatedContentMaxHeight}px`
             }
+        }
+
+        const resizeHandle: ResizeObserverCallback = _.debounce(() => {
+            // Listen for element height changes
+            applyTranslatedContentMaxHeight()
         }, 500)
 
         const observer = new ResizeObserver(resizeHandle)
         observer.observe(popupCardInnerContainer)
+        applyTranslatedContentMaxHeight()
         return () => {
             observer.disconnect()
+            const cancelableResizeHandle = resizeHandle as unknown as { cancel?: () => void }
+            cancelableResizeHandle.cancel?.()
         }
     }, [showSettings])
 

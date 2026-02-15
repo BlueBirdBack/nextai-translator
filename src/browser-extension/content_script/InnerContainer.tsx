@@ -7,7 +7,6 @@ import {
     popupCardInnerContainerId,
     popupCardMaxWidth,
     popupCardMinHeight,
-    popupCardMinHeightAfterTranslation,
     popupCardMinWidth,
     popupCardOffset,
     zIndex,
@@ -55,7 +54,7 @@ export default function InnerContainer({ children, reference }: Props) {
                 size({
                     apply({ availableHeight, elements }) {
                         Object.assign(elements.floating.style, {
-                            maxHeight: `${Math.max(popupCardMinHeightAfterTranslation, availableHeight)}px`,
+                            maxHeight: `${Math.max(popupCardMinHeight, availableHeight)}px`,
                             overflow: 'hidden',
                         })
                     },
