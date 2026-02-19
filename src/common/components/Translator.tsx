@@ -94,6 +94,8 @@ import color from 'color'
 import { useAtom } from 'jotai'
 import { showSettingsAtom } from '../store/setting'
 
+const MIN_TRANSLATED_CONTENT_HEIGHT = 140
+
 const cache = new LRUCache({
     max: 500,
     maxSize: 5000,
@@ -318,6 +320,8 @@ const useStyles = createUseStyles({
         'marginTop': '-14px',
         'display': 'flex',
         'overflowY': 'auto',
+        'minHeight': `${MIN_TRANSLATED_CONTENT_HEIGHT}px`,
+        'maxHeight': '50vh',
         'color': props.themeType === 'dark' ? props.theme.colors.contentSecondary : props.theme.colors.contentPrimary,
         '& *': {
             '-ms-user-select': 'text',
@@ -1042,8 +1046,12 @@ function InnerTranslator(props: IInnerTranslatorProps) {
         const applyTranslatedContentMaxHeight = () => {
             const $translatedContent = translatedContentRef.current
             if ($translatedContent) {
-                const translatedContentMaxHeight = calculateTranslatedContentMaxHeight()
+                const translatedContentMaxHeight = Math.max(
+                    MIN_TRANSLATED_CONTENT_HEIGHT,
+                    calculateTranslatedContentMaxHeight()
+                )
                 $translatedContent.style.maxHeight = `${translatedContentMaxHeight}px`
+                $translatedContent.style.minHeight = `${MIN_TRANSLATED_CONTENT_HEIGHT}px`
             }
         }
 
