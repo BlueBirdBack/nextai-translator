@@ -144,4 +144,5 @@ export interface ISettings {
     uiFontSize: number
     iconSize: number
     noModelsAPISupport: boolean
+    showOriginalTextPanel?: boolean
 }
