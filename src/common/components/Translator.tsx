@@ -1105,7 +1105,7 @@ function InnerTranslator(props: IInnerTranslatorProps) {
             const cancelableResizeHandle = resizeHandle as unknown as { cancel?: () => void }
             cancelableResizeHandle.cancel?.()
         }
-    }, [showSettings])
+    }, [showSettings, showOriginalTextPanel, translatedText, isLoading, errorMessage, actionStr])
 
     const [isNotLogin, setIsNotLogin] = useState(false)
 
@@ -1776,6 +1776,13 @@ function InnerTranslator(props: IInnerTranslatorProps) {
         return color(theme.colors.backgroundPrimary).alpha(0.5).string()
     }, [settings.enableBackgroundBlur, theme.colors.backgroundPrimary])
 
+    const shouldShowTranslatedPanel =
+        !!translatedText ||
+        !!actionStr ||
+        !!errorMessage ||
+        isLoading ||
+        (translateDeps.text !== '' && activateAction?.id === translateDeps.action?.id)
+
     return (
         <div
             className={clsx(styles.popupCard, {
@@ -2364,7 +2371,7 @@ function InnerTranslator(props: IInnerTranslatorProps) {
                                     )}
                                 </div>
                             </div>
-                            {translateDeps.text !== '' && activateAction?.id === translateDeps.action?.id && (
+                            {shouldShowTranslatedPanel && (
                                 <div
                                     className={clsx(
                                         styles.popupCardTranslatedContainer,
