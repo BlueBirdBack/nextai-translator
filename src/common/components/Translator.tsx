@@ -94,7 +94,8 @@ import color from 'color'
 import { useAtom } from 'jotai'
 import { showSettingsAtom } from '../store/setting'
 
-const MIN_TRANSLATED_CONTENT_HEIGHT = 140
+const MIN_TRANSLATED_CONTENT_HEIGHT = 160
+const MAX_EDITOR_TEXTAREA_HEIGHT = '35vh'
 
 const cache = new LRUCache({
     max: 500,
@@ -277,6 +278,10 @@ const useStyles = createUseStyles({
     },
     'popupCardTranslatedContainer': (props: IThemedStyleProps) => ({
         'position': 'relative',
+        'display': 'flex',
+        'flexDirection': 'column',
+        'flex': 1,
+        'minHeight': `${MIN_TRANSLATED_CONTENT_HEIGHT}px`,
         'padding': '26px 16px 16px 16px',
         'border-top': `1px solid ${props.theme.colors.borderTransparent}`,
         '-ms-user-select': 'none',
@@ -319,6 +324,7 @@ const useStyles = createUseStyles({
     'popupCardTranslatedContentContainer': (props: IThemedStyleProps) => ({
         'marginTop': '-14px',
         'display': 'flex',
+        'flex': 1,
         'overflowY': 'auto',
         'minHeight': `${MIN_TRANSLATED_CONTENT_HEIGHT}px`,
         'maxHeight': '50vh',
@@ -2096,6 +2102,9 @@ function InnerTranslator(props: IInnerTranslatorProps) {
                                                                 ? 'monospace'
                                                                 : 'inherit',
                                                         textalign: 'start',
+                                                        maxHeight: MAX_EDITOR_TEXTAREA_HEIGHT,
+                                                        minHeight: '96px',
+                                                        overflowY: 'auto',
                                                     },
                                                 },
                                             }}
@@ -2105,7 +2114,7 @@ function InnerTranslator(props: IInnerTranslatorProps) {
                                             rows={
                                                 props.editorRows
                                                     ? props.editorRows
-                                                    : Math.min(Math.max(editableText.split('\n').length, 3), 12)
+                                                    : Math.min(Math.max(editableText.split('\n').length, 3), 8)
                                             }
                                             onChange={(e) => setEditableText(e.target.value)}
                                             onKeyDown={(e) => {
